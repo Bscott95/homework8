@@ -3,6 +3,7 @@
 let express = require("express");
 let path = require("path");
 let fs = require("fs");
+const { json } = require("express");
 // const { json } = require("body-parser");
 
 // Sets up the Express App
@@ -36,35 +37,59 @@ app.get("/", function(req, res) {
 // The following API routes should be created:
 
 //   * GET `/api/notes` - Should read the `db.json` file and return all saved notes as JSON.
+app.get("/api/notes", function(req, res) {
+  let rawData = fs.readFileSync("./db/db.json", 'utf8');
+  console.log("res.json", res.json)
+  // return res.json(rawData)    
+  res.send(JSON.parse(rawData));
+});
 
 //   * POST `/api/notes` - Should receive a new note to save on the request body, add it to the `db.json` file, 
 // and then return the new note to the client.
+app.post("/api/notes", function(req, res) {
+  //Get the data from db.json
+  let notesArray = JSON.parse(fs.readFileSync("db/db.json"))
+  console.log(notesArray); 
+
+  // function to add an id value. 
+  let id = () => {
+    if (notesArray.length === 0) {
+      return 0;
+      //otherwise set id to last id in array + 1
+    } else {
+      let setId = notesArray[notesArray.length - 1].id;
+      setId++;
+      return setId;
+    }
+  };
+
+  // Data received from the form submit
+  let requestData = req.body;
+  requestData.id = id()
+
+  notesArray.push(requestData)
+  fs.writeFileSync("db/db.json", JSON.stringify(notesArray));
+  res.send(notesArray);
+});
 
 //   * DELETE `/api/notes/:id` - Should receive a query parameter containing the id of a note to delete. 
 // This means you'll need to find a way to give each note a unique `id` when it's saved. 
 // In order to delete a note, you'll need to read all notes from the `db.json` file, remove the note with 
 // the given `id` property, and then rewrite the notes to the `db.json` file.
 
-// GET /api/notes
-app.get("/api/notes", function(req, res) {
-    let rawData = fs.readFileSync("db/db.json");    
-    res.send(JSON.parse(rawData));
-});
-
-// POST /api/notes
-app.post("/api/notes", function(req, res) {
-  // Data received from the form submit
-  let requestData = req.body;
-     console.log(requestData)
-  //Get the data from db.json
-  let rawData = fs.readFileSync("db/db.json");  
-  let jsonData = JSON.parse(rawData);
-});
-
 // DELETE /api/clear   THIS is to clear all the data from all the notes i.e db.json
-app.post('/api/notes',function(req, res) {
-    fs.writeFileSync('db/db.json', JSON.stringify([]));
-    res.send('All Clear');
+app.delete('/api/notes/:noteid',function(req, res) {
+  let id = req.params.noteid;
+  console.log(id)
+  let notesArray = JSON.parse(fs.readFileSync("db/db.json"))
+
+  // const newArr = notesArray.filter(note => note.id === parseInt(id));
+  // console.log("noteAr",newArr)
+  const withRemovedNote = notesArray.filter((note) => note.id !== parseInt(id));
+  console.log(withRemovedNote)
+  // const finalNote = JSON.stringify(withRemovedNote);
+  fs.writeFileSync("db/db.json", JSON.stringify(withRemovedNote));
+  res.send(withRemovedNote)
 });
 // ************* API ROUTES END ********************************
 

@@ -9,6 +9,7 @@ let activeNote = {};
 
 // A function for getting all notes from the db
 const getNotes = () => {
+  console.log("getNotes")
   return $.ajax({
     url: "/api/notes",
     method: "GET",
@@ -17,6 +18,7 @@ const getNotes = () => {
 
 // A function for saving a note to the db
 const saveNote = (note) => {
+  console.log("saveNotes")
   return $.ajax({
     url: "/api/notes",
     data: note,
@@ -55,9 +57,11 @@ const handleNoteSave = function () {
     title: $noteTitle.val(),
     text: $noteText.val(),
   };
-
+  console.log("58")
+  console.log(newNote)
   saveNote(newNote).then(() => {
     getAndRenderNotes();
+    console.log("GetAndRenderNotes")
     renderActiveNote();
   });
 };
@@ -104,12 +108,14 @@ const handleRenderSaveBtn = function () {
 // Render's the list of note titles
 const renderNoteList = (notes) => {
   $noteList.empty();
+  console.log("renderNoteList")
 
   const noteListItems = [];
 
   // Returns jquery object for li with given text and delete button
   // unless withDeleteButton argument is provided as false
   const create$li = (text, withDeleteButton = true) => {
+    console.log("renderNoteList CREATELI")
     const $li = $("<li class='list-group-item'>");
     const $span = $("<span>").text(text);
     $li.append($span);
@@ -125,12 +131,14 @@ const renderNoteList = (notes) => {
 
   if (notes.length === 0) {
     noteListItems.push(create$li("No saved Notes", false));
-  }
+  } else {
 
   notes.forEach((note) => {
     const $li = create$li(note.title).data(note);
     noteListItems.push($li);
+    console.log("renderNoteList ForEach")
   });
+  }
 
   $noteList.append(noteListItems);
 };
