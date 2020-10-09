@@ -40,16 +40,10 @@ Application allows users to view previously saved notes.
 
 Application allows users to delete previously saved notes.
 
-## Deploying the App
-
-You will not be able to deploy your server side code on GitHub pages. This app should be deployed on Heroku. Carefully follow the [Heroku Guide](../04-Supplemental/HerokuGuide.md) for getting your app deployed on Heroku.
-
 - - -
 
-## Submission on BCS
+## Links
 
-You are required to submit the following:
-
-* The URL of the deployed application. This should be the link to the url provided by Heroku. Be sure not to submit a link to the Heroku dashboard.
+* Deployed App: https://murmuring-escarpment-16937.herokuapp.com/
 
 * Github repo: https://github.com/Bscott95/homework8 
